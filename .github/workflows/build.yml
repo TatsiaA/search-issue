@@ -43,7 +43,7 @@ jobs:
 
   code-style:
     needs: [ env-setup ]
-    uses: .github/workflows/_code_style.yml
+    uses: ./.github/workflows/_code_style.yml
     with:
       cache_key: ${{ needs.env-setup.outputs.cache-key }}
       style_report: ${{ needs.env-setup.outputs.style-report }}
@@ -52,7 +52,7 @@ jobs:
 
   code-analyse:
     needs: [ env-setup ]
-    uses: .github/workflows/_code_analyse.yml
+    uses: ./.github/workflows/_code_analyse.yml
     with:
       cache_key: ${{ needs.env-setup.outputs.cache-key }}
       extensions: ${{ needs.env-setup.outputs.extensions }}
@@ -60,7 +60,7 @@ jobs:
 
   tests:
     needs: [ env-setup ]
-    uses: .github/workflows/_tests.yml
+    uses: ./.github/workflows/_tests.yml
     with:
       cache_key: ${{ needs.env-setup.outputs.cache-key }}
       extensions: ${{ needs.env-setup.outputs.extensions }}
