@@ -67,7 +67,6 @@ class ScoreController extends AbstractController
             'score' => $score
         ];
         return $this->json($output);
-
     }
 
     /**
@@ -80,7 +79,8 @@ class ScoreController extends AbstractController
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function getContent(string $term, string $additionalParam = 'sucks'): array {
+    public function getContent(string $term, string $additionalParam = 'sucks'): array
+    {
         $response = $this->client->request(
             'GET',
             'https://api.github.com/search/issues?q=' . $term . '+' . $additionalParam .  '&sort=created&order=asc'
