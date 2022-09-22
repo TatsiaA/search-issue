@@ -49,13 +49,14 @@ class ScoreController extends AbstractController
         if (!$query) {
             $contentSucks = $this->getContent($term);
             $contentRocks = $this->getContent($term, 'rocks');
-            $score = $contentRocks['total_count'] / ($contentSucks['total_count'] + $contentRocks['total_count']) * 10;
+            $score = round(
+                $contentRocks['total_count'] / ($contentSucks['total_count'] + $contentRocks['total_count']) * 10,
+                2
+            );
 
             $query = new Word();
             $query->setTerm($term);
             $query->setScore($score);
-            $query->setCreatedAt(new \DateTimeImmutable(''));
-            $query->setUpdatedAt(new \DateTimeImmutable(''));
 
             $repository->add($query, true);
         } else {
@@ -63,7 +64,7 @@ class ScoreController extends AbstractController
         }
         $output = [
             'term' => $term,
-            'score' => round($score, 2)
+            'score' => $score
         ];
         return $this->json($output);
 
