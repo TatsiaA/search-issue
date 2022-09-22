@@ -1,0 +1,11 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectRepository\\<App\\\\Entity\\\\Word\\>\\:\\:add\\(\\)\\.$#"
+			count: 1
+			path: src/Controller/ScoreController.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectRepository\\<App\\\\Entity\\\\Word\\>\\:\\:createQueryBuilder\\(\\)\\.$#"
+			count: 1
+			path: src/Controller/ScoreController.php
