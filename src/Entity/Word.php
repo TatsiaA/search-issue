@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\WordRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: WordRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -13,10 +14,11 @@ class Word
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255)]
-    private ?string $term = null;
+    #[Assert\NotBlank]
+    private string $term;
 
     #[ORM\Column]
     private ?float $score = null;

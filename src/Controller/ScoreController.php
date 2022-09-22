@@ -17,14 +17,12 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ScoreController extends AbstractController
 {
-    public HttpClientInterface $client;
 
     /**
      * @param HttpClientInterface $client
      */
-    public function __construct(HttpClientInterface $client)
+    public function __construct(public readonly HttpClientInterface $client)
     {
-        $this->client = $client;
     }
 
     /**
