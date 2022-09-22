@@ -7,6 +7,5 @@ class StoreService {
 
     public function findWord(ManagerRegistry $doctrine): array
     {
-
     }
 }
