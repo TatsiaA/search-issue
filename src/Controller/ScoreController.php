@@ -90,4 +90,5 @@ class ScoreController extends AbstractController
 
         return $response->toArray();
     }
+
 }
