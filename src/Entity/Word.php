@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\WordRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -21,13 +23,21 @@ class Word
     private string $term;
 
     #[ORM\Column]
-    private ?float $score = null;
+    private float $score;
 
     #[ORM\Column]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
     private ?DateTimeImmutable $updatedAt = null;
+
+    #[ORM\ManyToMany(targetEntity: Provider::class, mappedBy: 'word')]
+    private Collection $providers;
+
+    public function __construct()
+    {
+        $this->providers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -97,5 +107,32 @@ class Word
         if ($this->getCreatedAt() === null) {
             $this->setCreatedAt(new DateTimeImmutable('now'));
         }
+    }
+
+    /**
+     * @return Collection<int, Provider>
+     */
+    public function getProviders(): Collection
+    {
+        return $this->providers;
+    }
+
+    public function addProvider(Provider $provider): self
+    {
+        if (!$this->providers->contains($provider)) {
+            $this->providers->add($provider);
+            $provider->addWord($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProvider(Provider $provider): self
+    {
+        if ($this->providers->removeElement($provider)) {
+            $provider->removeWord($this);
+        }
+
+        return $this;
     }
 }

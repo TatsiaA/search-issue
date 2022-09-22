@@ -36,17 +36,25 @@ class ScoreController extends AbstractController
     public function score(Request $request, ManagerRegistry $doctrine): Response
     {
         $term = $request->get('term');
+        $provider = $request->get('provider');
+        $repositoryProvide = $doctrine->getRepository(Provider::class);
+        $repositoryProvide->createQueryBuilder('p')
+            ->where('p.name = :provider')
+            ->setParameter('provider', $provider)
+            ->getQuery()
+            ->getResult();
 
         $repository = $doctrine->getRepository(Word::class);
         $query = $repository->createQueryBuilder('w')
+            ->where('w.term = :term')
             ->where('w.term = :term')
             ->setParameter('term', $term)
             ->getQuery()
             ->getResult();
 
         if (!$query) {
-            $contentSucks = $this->getContent($term);
-            $contentRocks = $this->getContent($term, 'rocks');
+            $contentSucks = $this->getContent($repositoryProvide->url, $term);
+            $contentRocks = $this->getContent($repositoryProvide->url, $term, 'rocks');
             $score = round(
                 $contentRocks['total_count'] / ($contentSucks['total_count'] + $contentRocks['total_count']) * 10,
                 2
@@ -68,6 +76,7 @@ class ScoreController extends AbstractController
     }
 
     /**
+     * @param string $url
      * @param string $term
      * @param string $additionalParam
      * @return array
@@ -77,11 +86,11 @@ class ScoreController extends AbstractController
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function getContent(string $term, string $additionalParam = 'sucks'): array
+    public function getContent(string $url, string $term, string $additionalParam = 'sucks'): array
     {
         $response = $this->client->request(
             'GET',
-            'https://api.github.com/search/issues?q=' . $term . '+' . $additionalParam .  '&sort=created&order=asc'
+            $url . '?q=' . $term . '+' . $additionalParam .  '&sort=created&order=asc'
         );
 
         $response->getContent();
