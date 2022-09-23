@@ -5,7 +5,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class StoreService {
 
-    public function findWord(ManagerRegistry $doctrine): array
-    {
-    }
+//    public function findWord(ManagerRegistry $doctrine): array
+//    {
+//    }
 }

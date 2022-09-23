@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Provider;
 use App\Entity\Word;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,7 +39,7 @@ class ScoreController extends AbstractController
         $term = $request->get('term');
         $provider = $request->get('provider');
         $repositoryProvide = $doctrine->getRepository(Provider::class);
-        $repositoryProvide->createQueryBuilder('p')
+        $queryToProvide = $repositoryProvide->createQueryBuilder('p')
             ->where('p.name = :provider')
             ->setParameter('provider', $provider)
             ->getQuery()
@@ -46,15 +47,18 @@ class ScoreController extends AbstractController
 
         $repository = $doctrine->getRepository(Word::class);
         $query = $repository->createQueryBuilder('w')
-            ->where('w.term = :term')
-            ->where('w.term = :term')
+            ->andWhere('w.term = :term')
+//            ->andWhere('w.provider = :term')
             ->setParameter('term', $term)
             ->getQuery()
             ->getResult();
 
-        if (!$query) {
-            $contentSucks = $this->getContent($repositoryProvide->url, $term);
-            $contentRocks = $this->getContent($repositoryProvide->url, $term, 'rocks');
+        if ($query) {
+            $score = $query[0]->getScore();
+        } else {
+            $url = $queryToProvide[0]->getBaseUrl();
+            $contentSucks = $this->getContent($term, $url);
+            $contentRocks = $this->getContent($term, $url, 'rocks');
             $score = round(
                 $contentRocks['total_count'] / ($contentSucks['total_count'] + $contentRocks['total_count']) * 10,
                 2
@@ -65,8 +69,6 @@ class ScoreController extends AbstractController
             $query->setScore($score);
 
             $repository->add($query, true);
-        } else {
-            $score = $query[0]->getScore();
         }
         $output = [
             'term' => $term,
@@ -86,7 +88,7 @@ class ScoreController extends AbstractController
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function getContent(string $url, string $term, string $additionalParam = 'sucks'): array
+    public function getContent(string $term, string $url = 'https://api.github.com/search/issues', string $additionalParam = 'sucks'): array
     {
         $response = $this->client->request(
             'GET',

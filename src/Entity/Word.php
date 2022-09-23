@@ -39,12 +39,12 @@ class Word
         $this->providers = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getTerm(): ?string
+    public function getTerm(): string
     {
         return $this->term;
     }
@@ -104,9 +104,6 @@ class Word
     public function preUpdate(): void
     {
         $this->setUpdatedAt(new DateTimeImmutable('now'));
-        if ($this->getCreatedAt() === null) {
-            $this->setCreatedAt(new DateTimeImmutable('now'));
-        }
     }
 
     /**

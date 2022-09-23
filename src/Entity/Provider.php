@@ -3,22 +3,27 @@
 namespace App\Entity;
 
 use App\Repository\ProviderRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProviderRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Provider
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private string $name;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private string $base_url;
 
     #[ORM\Column]
@@ -35,12 +40,12 @@ class Provider
         $this->word = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -52,7 +57,7 @@ class Provider
         return $this;
     }
 
-    public function getBaseUrl(): ?string
+    public function getBaseUrl(): string
     {
         return $this->base_url;
     }
@@ -110,5 +115,19 @@ class Provider
         $this->word->removeElement($word);
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $this->setUpdatedAt(new DateTimeImmutable('now'));
+        if ($this->getCreatedAt() === null) {
+            $this->setCreatedAt(new DateTimeImmutable('now'));
+        }
+    }
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->setUpdatedAt(new DateTimeImmutable('now'));
     }
 }
