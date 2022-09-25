@@ -11,7 +11,7 @@ This application calculates the popularity of a given word in given provider ([G
 1. [Setup](#setup)
 2. [Supported Providers](#supported-providers)
     - [GitHub Provider](#github-provider)
-3[Custom providers implementation](#custom-providers-implementation)
+3. [Custom providers implementation](#custom-providers-implementation)
 
 ## Setup
 Clone `Appraiser` and install it by running following commands:
