@@ -46,7 +46,6 @@ class ScoreService
         $word->setScore($score);
         $word->setTerm($this->provider->getTerm());
         $word->setProvider($this->provider->getProviderEntity());
-        $this->logger->info('term: ' . $this->provider->getTerm());
         $this->validate($word);
         /** @var WordRepository $wordRepository */
         $wordRepository = $this->doctrine->getRepository(Word::class);
