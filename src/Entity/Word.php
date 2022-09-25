@@ -16,13 +16,14 @@ class Word
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private int $id;
+    private int $id; // @phpstan-ignore-line
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private string $term;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
     private float $score;
 
     #[ORM\Column]
