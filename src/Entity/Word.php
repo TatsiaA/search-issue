@@ -16,14 +16,19 @@ class Word
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    private string $term;
+    private ?string $term = null;
 
     #[ORM\Column]
-    private float $score;
+    #[Assert\NotBlank]
+    private ?float $score = null;
+
+    #[ORM\ManyToOne(inversedBy: 'words')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Provider $provider = null;
 
     #[ORM\Column]
     private ?DateTimeImmutable $createdAt = null;
@@ -31,20 +36,12 @@ class Word
     #[ORM\Column]
     private ?DateTimeImmutable $updatedAt = null;
 
-    #[ORM\ManyToMany(targetEntity: Provider::class, mappedBy: 'word')]
-    private Collection $providers;
-
-    public function __construct()
-    {
-        $this->providers = new ArrayCollection();
-    }
-
     public function getId(): int
     {
         return $this->id;
     }
 
-    public function getTerm(): string
+    public function getTerm(): ?string
     {
         return $this->term;
     }
@@ -106,29 +103,14 @@ class Word
         $this->setUpdatedAt(new DateTimeImmutable('now'));
     }
 
-    /**
-     * @return Collection<int, Provider>
-     */
-    public function getProviders(): Collection
+    public function getProvider(): ?Provider
     {
-        return $this->providers;
+        return $this->provider;
     }
 
-    public function addProvider(Provider $provider): self
+    public function setProvider(?Provider $provider): self
     {
-        if (!$this->providers->contains($provider)) {
-            $this->providers->add($provider);
-            $provider->addWord($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProvider(Provider $provider): self
-    {
-        if ($this->providers->removeElement($provider)) {
-            $provider->removeWord($this);
-        }
+        $this->provider = $provider;
 
         return $this;
     }

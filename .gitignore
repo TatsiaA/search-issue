@@ -20,7 +20,6 @@
 ###< symfony/phpunit-bridge ###
 
 /.idea/
-/.env
 phpstan.neon
 
 ###> squizlabs/php_codesniffer ###

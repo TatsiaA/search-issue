@@ -16,15 +16,15 @@ class Provider
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    private string $name;
+    private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    private string $base_url;
+    private ?string $base_url = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
@@ -32,20 +32,20 @@ class Provider
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
 
-    #[ORM\ManyToMany(targetEntity: Word::class, inversedBy: 'providers')]
-    private Collection $word;
+    #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Word::class)]
+    private Collection $words;
 
     public function __construct()
     {
-        $this->word = new ArrayCollection();
+        $this->words = new ArrayCollection();
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -57,7 +57,7 @@ class Provider
         return $this;
     }
 
-    public function getBaseUrl(): string
+    public function getBaseUrl(): ?string
     {
         return $this->base_url;
     }
@@ -93,30 +93,6 @@ class Provider
         return $this;
     }
 
-    /**
-     * @return Collection<int, Word>
-     */
-    public function getWord(): Collection
-    {
-        return $this->word;
-    }
-
-    public function addWord(Word $word): self
-    {
-        if (!$this->word->contains($word)) {
-            $this->word->add($word);
-        }
-
-        return $this;
-    }
-
-    public function removeWord(Word $word): self
-    {
-        $this->word->removeElement($word);
-
-        return $this;
-    }
-
     #[ORM\PrePersist]
     public function prePersist(): void
     {
@@ -129,5 +105,35 @@ class Provider
     public function preUpdate(): void
     {
         $this->setUpdatedAt(new DateTimeImmutable('now'));
+    }
+
+    /**
+     * @return Collection<int, Word>
+     */
+    public function getWords(): Collection
+    {
+        return $this->words;
+    }
+
+    public function addWord(Word $word): self
+    {
+        if (!$this->words->contains($word)) {
+            $this->words->add($word);
+            $word->setProvider($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWord(Word $word): self
+    {
+        if ($this->words->removeElement($word)) {
+            // set the owning side to null (unless already changed)
+            if ($word->getProvider() === $this) {
+                $word->setProvider(null);
+            }
+        }
+
+        return $this;
     }
 }
