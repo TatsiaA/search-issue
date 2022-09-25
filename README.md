@@ -82,10 +82,10 @@ And finally, insert new record in provider table:
 INSERT INTO provider(name, base_url, created_at, updated_at) VALUES ("twitter", "twitter_url", NOW(), NOW())
 ```
 
-You can check [`src/Service/Providers/GithubProviderService.php`][4] as example.
+You can check [`src/Service/Providers/GithubProviderService.php`][5] as example.
 
 ## Contributing
-Thank you for considering contributing to Appraiser! You can read the contribution guide [here][5].
+Thank you for considering contributing to Appraiser! You can read the contribution guide [here][6].
 
 ## Credits
 - [TatsiaA][7]
@@ -97,7 +97,7 @@ Appraiser is published under the [proprietary license][8].
 [2]: https://twitter.com/
 [3]: https://github.com/TatsiaA/search-issue/blob/main/src/Enum/Provider.php
 [4]: https://github.com/TatsiaA/search-issue/blob/main/src/Service/Providers/ProviderService.php
-[4]: https://github.com/TatsiaA/search-issue/blob/main/src/Service/Providers/GithubProviderService.php
-[5]: CONTRIBUTING.md
+[5]: https://github.com/TatsiaA/search-issue/blob/main/src/Service/Providers/GithubProviderService.php
+[6]: CONTRIBUTING.md
 [7]: https://github.com/TatsiaA
 [8]: LICENSE
