@@ -1,0 +1,69 @@
+name: Appraiser Workflow
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+concurrency:
+  group: ci-appraiser-${{ github.ref }}-1
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  extensions: ctype, iconv, simplexml, tokenizer
+  tools: composer, cs2pr, phpstan, phpunit/phpunit, squizlabs/php_codesniffer
+  ini_values: post_max_size=256M, max_execution_time=180
+  cache_key: php-cache-v2
+  style_report: ./build/code-style/phpcs-report.xml
+
+jobs:
+  env-setup:
+    name: Set variables
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.set-variables.outputs.cache-key }}
+      extensions: ${{ steps.set-variables.outputs.extensions }}
+      tools: ${{ steps.set-variables.outputs.tools }}
+      style-report: ${{ steps.set-variables.outputs.style-report }}
+    steps:
+      - name: Set variables
+        id: set-variables
+        run: |
+          echo "::set-output name=cache-key::${{ env.cache_key }}"
+          echo "::set-output name=extensions::${{ env.extensions }}"
+          echo "::set-output name=tools::${{ env.tools }}"
+          echo "::set-output name=style-report::${{ env.style_report }}"
+
+  code-style:
+    needs: [ env-setup ]
+    uses: ./.github/workflows/_code_style.yml
+    with:
+      cache_key: ${{ needs.env-setup.outputs.cache-key }}
+      style_report: ${{ needs.env-setup.outputs.style-report }}
+      extensions: ${{ needs.env-setup.outputs.extensions }}
+      tools: ${{ needs.env-setup.outputs.tools }}
+
+  code-analyse:
+    needs: [ env-setup ]
+    uses: ./.github/workflows/_code_analyse.yml
+    with:
+      cache_key: ${{ needs.env-setup.outputs.cache-key }}
+      extensions: ${{ needs.env-setup.outputs.extensions }}
+      tools: ${{ needs.env-setup.outputs.tools }}
+
+  tests:
+    needs: [ env-setup ]
+    uses: ./.github/workflows/_tests.yml
+    with:
+      cache_key: ${{ needs.env-setup.outputs.cache-key }}
+      extensions: ${{ needs.env-setup.outputs.extensions }}
+      tools: ${{ needs.env-setup.outputs.tools }}
