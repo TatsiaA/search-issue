@@ -17,5 +17,6 @@ class ScoreController extends AbstractController
     public function score(ScoreService $scoreService): JsonResponse
     {
         return $this->json($scoreService->rating());
+
     }
 }
