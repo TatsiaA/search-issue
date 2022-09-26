@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class ScoreControllerTest extends TestCase
+class ScoreController1Test extends TestCase
 {
     /**
      * @return void
