@@ -16,5 +16,6 @@ class WordTest extends TestCase
         $this->assertClassHasAttribute('term', Word::class);
         $this->assertClassHasAttribute('score', Word::class);
         $this->assertClassHasAttribute('provider', Word::class);
+
     }
 }

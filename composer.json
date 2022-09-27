@@ -117,7 +117,7 @@
         "style": "phpcs --standard=PSR12 src/ tests/",
         "fix-style": "phpcbf --standard=PSR12 src/ tests/",
         "analyse": "vendor/bin/phpstan analyze --ansi --memory-limit=-1",
-        "tests": "XDEBUG_MODE=coverage vendor/bin/phpunit",
+        "tests": "XDEBUG_MODE=coverage php bin/phpunit",
         "all": [
             "@composer validate --strict --ansi",
             "@style",
