@@ -25,11 +25,11 @@ git clone git@github.com:TatsiaA/search-issue.git
 cd search-issue
 composer install
 ```
-Then start docker services by running following command
+Then start docker services by running following command:
 ```bash
 docker-compose up -d --build
 ```
-Then setup database by running following commands
+Then setup database by running following commands:
 ```bash
 docker-compose run --rm php-service php bin/console doctrine:database:create
 docker-compose run --rm php-service php bin/console doctrine:migrations:migrate
@@ -98,7 +98,7 @@ INSERT INTO provider(name, base_url, created_at, updated_at) VALUES ("twitter", 
 You can check [`src/Service/Providers/GithubProviderService.php`][5] as example.
 
 ## CI/CD
-Following CI/CD jobs are urrently implemented:
+Following CI/CD jobs are currently implemented:
 - [Code Style][11] ([`PSR-12`][9])
 - [Code Analyse][12] (with [`PHPStan`][10])
 - [Tests][13]
