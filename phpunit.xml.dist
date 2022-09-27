@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
@@ -15,16 +14,12 @@
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
-        <env name="DB_CONNECTION" value="sqlite"/>
-        <env name="DB_DATABASE" value=":memory:"/>
     </php>
-
     <testsuites>
         <testsuite name="Appraiser Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
-
     <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">src</directory>
@@ -35,15 +30,13 @@
             <text outputFile="./build/coverage/log/coverage.txt" showUncoveredFiles="true" showOnlySummary="true"/>
         </report>
     </coverage>
-
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
     </listeners>
 
-    <!-- Run `composer require symfony/panther` before enabling this extension -->
-    <!--
     <extensions>
-        <extension class="Symfony\Component\Panther\ServerExtension" />
+        <!-- Run `composer require symfony/panther` before enabling this extension -->
+        <!-- <extension class="Symfony\Component\Panther\ServerExtension" />-->
+        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
     </extensions>
-    -->
 </phpunit>
