@@ -1,5 +1,4 @@
 name: Code Testing
-
 on:
   workflow_call:
     inputs:
@@ -27,7 +26,6 @@ on:
         default: max_execution_time=180
         required: false
         type: string
-
 jobs:
   tests:
     timeout-minutes: 15
@@ -43,11 +41,9 @@ jobs:
       min_coverage: ${{ steps.coverage_data.outputs.min_coverage }}
       actual_coverage: ${{ steps.coverage_data.outputs.actual_coverage }}
       result_coverage: ${{ steps.coverage_data.outputs.result_coverage }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Setup cache environment
         id: ext-cache
         uses: shivammathur/cache-extensions@v1
@@ -55,14 +51,12 @@ jobs:
           php-version: ${{ matrix.php-version }}
           extensions: ${{ inputs.extensions }}
           key: ${{ inputs.cache_key }}
-
       - name: Cache extensions
         uses: actions/cache@v3
         with:
           path: ${{ steps.ext-cache.outputs.dir }}
           key: ${{ steps.ext-cache.outputs.key }}
           restore-keys: ${{ steps.ext-cache.outputs.key }}
-
       - name: Setup PHP version ${{ matrix.php-version }} on ${{ matrix.os }}
         id: setup-php
         uses: shivammathur/setup-php@v2
@@ -75,15 +69,12 @@ jobs:
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           update: true
-
       - name: Setup problem matchers
         run: |
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
-
       - name: Validate composer.json and composer.lock
         run: composer validate --strict --ansi
-
       - name: Composer Install
         id: composer-install
         uses: ramsey/composer-install@v2
@@ -92,22 +83,8 @@ jobs:
           composer-options: "--prefer-dist"
 
       - name: Run test suite
-        run: phpunit
-
-      - name: Get coverage data
-        id: coverage-data
         run: |
-          highLowerBound=`php ./.github/scripts/code_coverage.php highLowerBound`
-          actualCoverage=`php ./.github/scripts/code_coverage.php actualCoverage`
-          echo "::set-output name=min_coverage::$highLowerBound"
-          echo "::set-output name=actual_coverage::$actualCoverage"
-          echo "::set-output name=result_coverage::$(($actualCoverage < $highLowerBound))"
-
-      - name: Code Coverage Check
-        if: ${{ always() && steps.coverage-data.outputs.result_coverage != 0 }}
-        run: |
-          echo Your code coverage \
-          ${{ steps.coverage-data.outputs.actual_coverage }} % less than \
-          ${{ steps.coverage-data.outputs.min_coverage }} % \
-          of minimum required bound. See build/coverage/html/index.html
-          exit 1
+          php bin/console --env=test doctrine:database:create --quiet --no-interaction --ansi
+          php bin/console --env=test doctrine:schema:create --quiet --no-interaction --ansi
+          php bin/console --env=test doctrine:fixtures:load --quiet --no-interaction --ansi
+          php bin/phpunit
